@@ -1,0 +1,22 @@
+{
+  "name": "medusa2-marketplace-demo",
+  "version": "1.0.0",
+  "description": "This is a demo project which how to create a marketplace demo using [Medusa 2.0](https://medusajs.com/)",
+  "main": "index.js",
+  "scripts": {
+    "composerUp": "cd .devcontainer && docker compose up",
+    "setupMedusaServer": "cd medusa-marketplace-demo && yarn && npx medusa db:setup --db marketplace && npx medusa db:migrate && yarn dev",
+    "startMedusaLocalServer":"cd medusa-marketplace-demo && yarn dev",
+    "setupMedusaUserSeed": "cd medusa-marketplace-demo && npx medusa user --email test@example.com --password Password123 && yarn seed",
+    "setupWebsite": "cd website && yarn && yarn build && yarn dev",
+    "setup":"npm run setupMedusaServer && npm run setupMedusaUser && npm run setupWebsite",
+    "start": "docker compose -f ./.devcontainer/docker-compose.yml -f ./.devcontainer/docker-compose.medusa.yml up --build",
+    "db:backup": "mkdir -p ./backups && docker exec -t marketplace-db-postgres pg_dump -U marketplace -d marketplace --clean --if-exists > ./backups/marketplace-$(date +%Y%m%d_%H%M%S).sql",
+    "db:restore": "echo '\nAvailable backups:' && ls -l ./backups/ && echo '\nTo restore, run: npm run db:restore-file --file=<filename>'",
+    "db:restore-file": "if [ -f \"./backups/$npm_config_file\" ]; then cat ./backups/$npm_config_file | docker exec -i marketplace-db-postgres psql -U marketplace -d marketplace; else echo \"Error: Backup file './backups/$npm_config_file' not found\"; fi",
+    "db:restore-latest": "cat $(ls -t ./backups/*.sql | head -n1) | docker exec -i marketplace-db-postgres psql -U marketplace -d marketplace"
+  },
+  "author": "",
+  "license": "ISC",
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}

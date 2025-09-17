@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+
+  medusa:
+    build:
+      context: ../medusa-marketplace-demo
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME:-marketplace}-medusa
+    depends_on:
+      - postgres
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - ../medusa-marketplace-demo/.env.docker:/application/.env
+    command: sh -c "yarn dev"
+    networks:
+      - internal
+
+  website:
+    build:
+      context: ../website
+      dockerfile: Dockerfile
+    container_name: ${PROJECT_NAME:-website}-medusa
+    depends_on:
+      - medusa
+    restart: always
+    ports:
+      - 8000:8000
+    volumes:
+      - ../website/.env.docker:/application/.env
+    command: sh -c "yarn dev"
+    networks:
+      - internal
+
+networks:
+  internal:
+    external: true

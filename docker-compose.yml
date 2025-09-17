@@ -1,0 +1,145 @@
+version: '3.8'
+
+services:
+  # Medusa Services
+  medusa:
+    build:
+      context: ./medusa2-marketplace-demo/medusa-marketplace-demo
+      dockerfile: Dockerfile
+    container_name: medusa
+    depends_on:
+      - postgres
+    restart: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./medusa2-marketplace-demo/medusa-marketplace-demo/.env.docker:/application/.env
+    networks:
+      - unified-network
+
+  website:
+    build:
+      context: ./medusa2-marketplace-demo/website
+      dockerfile: Dockerfile
+    container_name: website
+    depends_on:
+      - medusa
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./medusa2-marketplace-demo/website/.env.docker:/application/.env
+    networks:
+      - unified-network
+
+  postgres:
+    image: postgres:15.3-alpine
+    container_name: medusa-db
+    environment:
+      POSTGRES_DB: marketplace
+      POSTGRES_USER: marketplace
+      POSTGRES_PASSWORD: super-secure-password
+      PGDATA: '/var/lib/postgresql/data'
+      POSTGRES_INITDB_ARGS: '-E UTF8 --locale=C'
+    ports:
+      - "5432:5432"
+    volumes:
+      - medusa-db-data:/var/lib/postgresql/data
+    networks:
+      - unified-network
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: medusa-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - medusa-redis-data:/data
+    networks:
+      - unified-network
+
+  # Strapi Services
+  strapi:
+    build:
+      context: ./strapi-server
+    container_name: strapi
+    restart: unless-stopped
+    env_file: ./strapi-server/.env.example
+    environment:
+      DATABASE_CLIENT: postgres
+      DATABASE_HOST: strapi-db
+      DATABASE_NAME: strapi
+      DATABASE_USERNAME: strapi
+      DATABASE_PORT: 5432
+      JWT_SECRET: strapi-jwt-secret
+      ADMIN_JWT_SECRET: strapi-admin-jwt-secret
+      DATABASE_PASSWORD: strapi-password
+      NODE_ENV: development
+    volumes:
+      - ./strapi-server/config:/opt/app/config
+      - ./strapi-server/src:/opt/app/src
+      - ./strapi-server/package.json:/opt/package.json
+      - ./strapi-server/yarn.lock:/opt/yarn.lock
+      - ./strapi-server/.env.example:/opt/app/.env
+      - ./strapi-server/public/uploads:/opt/app/public/uploads
+    ports:
+      - "1337:1337"
+    networks:
+      - unified-network
+    depends_on:
+      - strapi-db
+
+  strapi-db:
+    container_name: strapi-db
+    platform: linux/amd64
+    restart: unless-stopped
+    env_file: ./strapi-server/.env.example
+    image: postgres:14.5-alpine
+    environment:
+      POSTGRES_USER: strapi
+      POSTGRES_PASSWORD: strapi-password
+      POSTGRES_DB: strapi
+    volumes:
+      - strapi-data:/var/lib/postgresql/data/
+      - ./strapi-server/postgresql.conf:/etc/postgresql/postgresql.conf
+    command: postgres -c 'config_file=/etc/postgresql/postgresql.conf'
+    ports:
+      - "5433:5432"
+    networks:
+      - unified-network
+
+  strapiAdminer:
+    container_name: strapiAdminer
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - "9090:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=strapi-db
+    networks:
+      - unified-network
+    depends_on:
+      - strapi-db
+
+  # Nginx Proxy
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      - unified-network
+    depends_on:
+      - medusa
+      - strapi
+
+volumes:
+  medusa-db-data:
+  medusa-redis-data:
+  strapi-data:
+
+networks:
+  unified-network:
+    name: unified-auth-network

@@ -1,0 +1,543 @@
+{
+  "info": {
+    "name": "Unified Auth - Medusa & Strapi",
+    "description": "Test collection for unified authentication between Medusa and Strapi servers",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "medusa_url",
+      "value": "http://localhost:9000",
+      "type": "string"
+    },
+    {
+      "key": "strapi_url", 
+      "value": "http://localhost:1337",
+      "type": "string"
+    },
+    {
+      "key": "medusa_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "strapi_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "publishable_key",
+      "value": "pk_29002f989c9c40f9779dd1bd62ca5af67aacb45170b179550b89ac71e50792ab",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔍 Health Checks",
+      "item": [
+        {
+          "name": "Medusa Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{medusa_url}}/health",
+              "host": ["{{medusa_url}}"],
+              "path": ["health"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Strapi Health Check",
+          "request": {
+            "method": "GET", 
+            "header": [],
+            "url": {
+              "raw": "{{strapi_url}}/_health",
+              "host": ["{{strapi_url}}"],
+              "path": ["_health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔐 Authentication",
+      "item": [
+        {
+          "name": "Medusa - Login (user@example.com)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('medusa_token', response.token);",
+                  "    pm.test('Login successful', function () {",
+                  "        pm.expect(response.token).to.be.a('string');",
+                  "        pm.expect(response.user.email).to.eql('roicoroy@yahoo.com.br');",
+                  "    });",
+                  "} else {",
+                  "    pm.test('Login failed', function () {",
+                  "        pm.expect.fail('Login should succeed');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{test_email}}\",\n  \"password\": \"{{test_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{medusa_url}}/unified-auth",
+              "host": ["{{medusa_url}}"],
+              "path": ["unified-auth"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Medusa - Login (roicoroy@yahoo.com.br)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('medusa_token', response.token);",
+                  "    pm.test('Login successful', function () {",
+                  "        pm.expect(response.token).to.be.a('string');",
+                  "        pm.expect(response.user.email).to.eql('roicoroy@yahoo.com.br');",
+                  "    });",
+                  "} else {",
+                  "    pm.test('Login failed', function () {",
+                  "        pm.expect.fail('Login should succeed');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"roicoroy@yahoo.com.br\",\n  \"password\": \"Rwbento123!\"\n}"
+            },
+            "url": {
+              "raw": "{{medusa_url}}/unified-auth",
+              "host": ["{{medusa_url}}"],
+              "path": ["unified-auth"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Medusa - Login (test@example.com)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('medusa_token', response.token);",
+                  "    pm.test('Login successful', function () {",
+                  "        pm.expect(response.token).to.be.a('string');",
+                  "        pm.expect(response.user.email).to.eql('test@example.com');",
+                  "    });",
+                  "} else {",
+                  "    pm.test('Login failed', function () {",
+                  "        pm.expect.fail('Login should succeed');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{medusa_url}}/unified-auth",
+              "host": ["{{medusa_url}}"],
+              "path": ["unified-auth"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Strapi - Unified Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('strapi_token', response.jwt);",
+                  "    pm.test('Login successful', function () {",
+                  "        pm.expect(response.jwt).to.be.a('string');",
+                  "        pm.expect(response.user.email).to.be.a('string');",
+                  "    });",
+                  "} else {",
+                  "    pm.test('Login failed - user might not exist', function () {",
+                  "        console.log('Create a user in Strapi first');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"test@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{strapi_url}}/api/unified-auth/login",
+              "host": ["{{strapi_url}}"],
+              "path": ["api", "unified-auth", "login"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔄 Cross-Service Token Validation",
+      "item": [
+        {
+          "name": "Use Medusa Token on Strapi",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Medusa token accepted by Strapi', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.message).to.include('Unified Auth');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{medusa_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{strapi_url}}/api/unified-auth",
+              "host": ["{{strapi_url}}"],
+              "path": ["api", "unified-auth"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Use Strapi Token on Medusa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Strapi token accepted by Medusa', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.message).to.include('Unified Auth');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{strapi_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{medusa_url}}/unified-auth",
+              "host": ["{{medusa_url}}"],
+              "path": ["unified-auth"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🛒 Medusa Store API (with Unified Auth)",
+      "item": [
+        {
+          "name": "Get Products (Public)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-publishable-api-key",
+                "value": "{{publishable_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{medusa_url}}/store/products",
+              "host": ["{{medusa_url}}"],
+              "path": ["store", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Products (with Unified Token)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{medusa_token}}"
+              },
+              {
+                "key": "x-publishable-api-key", 
+                "value": "{{publishable_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{medusa_url}}/store/products",
+              "host": ["{{medusa_url}}"],
+              "path": ["store", "products"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Regions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-publishable-api-key",
+                "value": "{{publishable_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{medusa_url}}/store/regions",
+              "host": ["{{medusa_url}}"],
+              "path": ["store", "regions"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📝 Strapi CMS API (with Unified Auth)",
+      "item": [
+        {
+          "name": "Get Content Types (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{strapi_url}}/api/content-type-builder/content-types",
+              "host": ["{{strapi_url}}"],
+              "path": ["api", "content-type-builder", "content-types"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Users (with Unified Token)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{medusa_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{strapi_url}}/api/users",
+              "host": ["{{strapi_url}}"],
+              "path": ["api", "users"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🧪 Token Validation Tests",
+      "item": [
+        {
+          "name": "Decode Medusa Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const token = pm.collectionVariables.get('medusa_token');",
+                  "if (token) {",
+                  "    const parts = token.split('.');",
+                  "    const payload = JSON.parse(atob(parts[1]));",
+                  "    ",
+                  "    pm.test('Token has correct structure', function () {",
+                  "        pm.expect(payload.source).to.eql('medusa');",
+                  "        pm.expect(payload.email).to.be.a('string');",
+                  "        pm.expect(payload.userId).to.be.a('string');",
+                  "    });",
+                  "    ",
+                  "    console.log('Token Payload:', JSON.stringify(payload, null, 2));",
+                  "} else {",
+                  "    pm.test('No token available', function () {",
+                  "        pm.expect.fail('Run Medusa login first');",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{medusa_url}}/unified-auth",
+              "host": ["{{medusa_url}}"],
+              "path": ["unified-auth"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Test Invalid Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Invalid token rejected', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid.token.here"
+              }
+            ],
+            "url": {
+              "raw": "{{strapi_url}}/api/users/me",
+              "host": ["{{strapi_url}}"],
+              "path": ["api", "users", "me"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📊 System Information",
+      "item": [
+        {
+          "name": "Medusa - Auth Endpoint Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{medusa_url}}/unified-auth",
+              "host": ["{{medusa_url}}"],
+              "path": ["unified-auth"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Strapi - Auth Endpoint Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{strapi_url}}/api/unified-auth",
+              "host": ["{{strapi_url}}"],
+              "path": ["api", "unified-auth"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Pre-request script for the entire collection",
+          "console.log('🔐 Testing Unified Auth System');",
+          "console.log('Medusa URL:', pm.collectionVariables.get('medusa_url'));",
+          "console.log('Strapi URL:', pm.collectionVariables.get('strapi_url'));"
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Global test script",
+          "pm.test('Response time is reasonable', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});"
+        ]
+      }
+    }
+  ]
+}

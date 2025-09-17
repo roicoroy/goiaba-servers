@@ -1,0 +1,70 @@
+services:
+  # Shared Auth Middleware Service
+  shared-auth-middleware:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: shared-auth-middleware
+    environment:
+      # Shared JWT Secret (must match your existing services)
+      JWT_SECRET: ${JWT_SECRET:-bnXXqww2fy/GOmHij32EX8D9LaqSPYVCtpZ5QQRI6GaI4QPcfuDHnSzqKGpUr+M+2kQ41wo9ZrJxfXMbBJLhiA==}
+      
+      # External service URLs (adjust to your existing services)
+      MEDUSA_URL: ${MEDUSA_URL:-http://host.docker.internal:9000}
+      STRAPI_URL: ${STRAPI_URL:-http://host.docker.internal:1337}
+      
+      # Server configuration
+      PORT: 3000
+      NODE_ENV: ${NODE_ENV:-production}
+      TOKEN_EXPIRY: ${TOKEN_EXPIRY:-24h}
+      
+      # Optional: Database connection for user validation
+      DATABASE_URL: ${DATABASE_URL:-}
+      
+      # Logging
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    ports:
+      - "${SHARED_AUTH_PORT:-3000}:3000"
+    networks:
+      - shared-auth-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    volumes:
+      # Optional: Mount logs directory
+      - ./logs:/app/logs
+    depends_on: []
+    # If you want to connect to existing Docker networks, uncomment below:
+    # external_links:
+    #   - medusa-server:medusa
+    #   - strapi-server:strapi
+
+  # Optional: Nginx reverse proxy for the shared auth service
+  nginx:
+    image: nginx:alpine
+    container_name: shared-auth-nginx
+    ports:
+      - "${NGINX_PORT:-8080}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - shared-auth-middleware
+    networks:
+      - shared-auth-network
+    restart: unless-stopped
+    profiles:
+      - with-proxy
+
+networks:
+  shared-auth-network:
+    driver: bridge
+    name: shared-auth-network
+
+volumes:
+  shared_auth_logs:
+    driver: local
