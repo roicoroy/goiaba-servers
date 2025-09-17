@@ -11,10 +11,10 @@
     "test:cross-service": "node tests/test-cross-service.js",
     "test:security": "node tests/test-security.js",
     "docker:setup": "./docker-setup.sh",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f",
-    "docker:build": "docker-compose build"
+    "docker:up": "docker-compose -f docker-compose.yml -f medusa-server/docker-compose.yml -f strapi-server/docker-compose.yml -f shared-auth-middleware/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f docker-compose.yml -f medusa-server/docker-compose.yml -f strapi-server/docker-compose.yml -f shared-auth-middleware/docker-compose.yml down",
+    "docker:logs": "docker-compose -f docker-compose.yml -f medusa-server/docker-compose.yml -f strapi-server/docker-compose.yml -f shared-auth-middleware/docker-compose.yml logs -f",
+    "docker:build": "docker-compose -f docker-compose.yml -f medusa-server/docker-compose.yml -f strapi-server/docker-compose.yml -f shared-auth-middleware/docker-compose.yml build"
   },
   "dependencies": {
     "axios": "^1.6.0"

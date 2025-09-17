@@ -1,0 +1,56 @@
+services:
+  medusa:
+    build:
+      context: medusa-server/medusa-marketplace-demo
+      dockerfile: Dockerfile
+    container_name: medusa
+    depends_on:
+      - postgres
+    restart: always
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./medusa-server/medusa-marketplace-demo/.env.docker:/application/.env
+    networks:
+      - unified-auth-network
+
+  website:
+    build:
+      context: medusa-server/website
+      dockerfile: Dockerfile
+    container_name: website
+    depends_on:
+      - medusa
+    restart: always
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./medusa-server/website/.env.docker:/application/.env
+    networks:
+      - unified-auth-network
+
+  postgres:
+    image: postgres:15.3-alpine
+    container_name: medusa-db
+    environment:
+      POSTGRES_DB: marketplace
+      POSTGRES_USER: marketplace
+      POSTGRES_PASSWORD: super-secure-password
+      PGDATA: '/var/lib/postgresql/data'
+      POSTGRES_INITDB_ARGS: '-E UTF8 --locale=C'
+    ports:
+      - "5432:5432"
+    volumes:
+      - medusa-db-data:/var/lib/postgresql/data
+    networks:
+      - unified-auth-network
+
+  redis:
+    image: redis:7.2-alpine
+    container_name: medusa-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - medusa-redis-data:/data
+    networks:
+      - unified-auth-network

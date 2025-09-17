@@ -41,25 +41,21 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
+# Define the docker-compose files to use
+COMPOSE_FILES="-f docker-compose.yml -f medusa-server/docker-compose.yml -f strapi-server/docker-compose.yml -f shared-auth-middleware/docker-compose.yml"
+
 # Create necessary directories
 print_status "Creating necessary directories..."
 mkdir -p logs
-mkdir -p backups
+mkdir -p medusa-server/backups
 mkdir -p tests/reports
-
-# Copy environment file
-if [ ! -f .env ]; then
-    print_status "Creating .env file from template..."
-    cp .env.docker .env
-    print_warning "Please review and update the .env file with your configuration"
-fi
 
 # Build and start services
 print_status "Building Docker images..."
-docker-compose build
+docker-compose $COMPOSE_FILES build
 
 print_status "Starting services..."
-docker-compose up -d
+docker-compose $COMPOSE_FILES up -d
 
 # Wait for services to be healthy
 print_status "Waiting for services to be ready..."
@@ -108,10 +104,10 @@ echo "   Shared Auth:      POST http://localhost:3000/auth/generate-token"
 echo "   Token Verify:     POST http://localhost:3000/auth/verify-token"
 echo ""
 echo "📊 Management Commands:"
-echo "   View logs:      docker-compose logs -f"
-echo "   Stop services:  docker-compose down"
-echo "   Restart:        docker-compose restart"
-echo "   Clean up:       docker-compose down -v"
+echo "   View logs:      docker-compose $COMPOSE_FILES logs -f"
+echo "   Stop services:  docker-compose $COMPOSE_FILES down"
+echo "   Restart:        docker-compose $COMPOSE_FILES restart"
+echo "   Clean up:       docker-compose $COMPOSE_FILES down -v"
 echo ""
 echo "🧪 Run tests:"
 echo "   Basic tests:    npm run test:basic"
