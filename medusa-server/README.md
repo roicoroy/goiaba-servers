@@ -1,9 +1,9 @@
-# Medusa2 Marketplace demo
+# Medusa2 Marketplace Demo
 
-This is a demo project which demoes how to create a multivendor marketplace demo using [Medusa 2.0](https://medusajs.com/)
+This is a demo project which demonstrates how to create a multivendor marketplace using [Medusa 2.0](https://medusajs.com/)
 
 > [!NOTE]
-**UPD**: all the multivendor marketplace  related code was moved to [medusa-marketplace-plugin](https://github.com/Tech-Labi/medusa-marketplace-plugin), so the demo app now uses this plugin (read Part 4 below).
+**UPD**: all the multivendor marketplace related code was moved to [medusa-marketplace-plugin](https://github.com/Tech-Labi/medusa-marketplace-plugin), so the demo app now uses this plugin (read Part 4 below).
 
 A four-part series articles on Medium:
 
@@ -14,33 +14,41 @@ A four-part series articles on Medium:
 
 ![1_EMHanavMVUIrwCw4_ROoiw](https://github.com/user-attachments/assets/c2cee973-7704-4843-8da4-8c5e877cdc8e)
 
+## Features
+
+- **Multi-vendor Marketplace**: Built on Medusa 2.0 marketplace demo
+- **Digital Products**: Support for digital product sales and downloads
+- **Unified Authentication**: JWT-based authentication system compatible with external services
+- **Admin Dashboard**: Customized Medusa admin for marketplace management
+- **API Integration**: RESTful APIs for all marketplace functionality
 
 ## How to run 
 
-### Option 1: All in one
+### Option 1: Docker (Recommended)
 
-If you want to run both PostgreSQL and Medusa in one command, use the following command that combines both the main `docker-compose.yml` file and the `docker-compose.medusa.yml` file:
+Run the complete Medusa server with PostgreSQL using Docker:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.medusa.yml up --build
+docker compose up --build
 ```
+
 This command will build and start both PostgreSQL and Medusa containers.
 
 **Important:** You can only run this command after `PostgreSQL` has already been started using the docker compose up command from Option 2 (below). This is because PostgreSQL creates a network that Medusa depends on to run properly.
 
-### Option 2: run Medusa app manually
+### Option 2: Manual Setup
 
-1. Run PostgreSQL
+1. **Start PostgreSQL**
 
 By default, running the following command will start only the `PostgreSQL` container:
 
-```
+```bash
 docker compose up
 ```
 
 This command will use your default docker-compose.yml file to start the `PostgreSQL` service, but `Medusa` will not be started automatically. This step is required because we create a network in `PostgreSQL`, and `Medusa` depends on it.
 
-2. Run Medusa app manually
+2. **Run Medusa manually**
 
 ```bash
 cd medusa-marketplace-demo
@@ -54,76 +62,137 @@ yarn dev
 
 The Medusa dashboard should now be running on http://localhost:9000/app
 
-## Cleanup resources
+### Option 3: NPM Scripts
 
-If you want to remove the containers, networks, and volumes created by Docker Compose, use the following commands:
-
-Option 1: Using the default `docker-compose.yml` (for PostgreSQL only)
+Use the provided npm scripts for easier setup:
 
 ```bash
-docker compose down -v
+# Setup Medusa server
+npm run setupMedusaServer
+
+# Create demo user and seed data
+npm run setupMedusaUserSeed
+
+# Start local development server
+npm run startMedusaLocalServer
 ```
 
-Option 2: Using the combined `docker-compose.yml` and `docker-compose.medusa.yml`
+## Access Points
 
-```bash
-docker compose -f docker-compose.yml -f docker-compose.medusa.yml down -v
-```
+Once running, you can access:
 
-## Backup and Restore Database
+| Service | URL | Description |
+|---------|-----|-------------|
+| Medusa API | `http://localhost:9000` | Main API endpoints |
+| Medusa Admin | `http://localhost:9000/app` | Admin dashboard |
+| Unified Auth | `http://localhost:9000/unified-auth` | Authentication endpoint |
 
-You can use `pg_dump` to back up your PostgreSQL database and `psql` to restore it. These commands can be executed against the running `postgres` container.
+## Authentication
 
-### Backup
+The server includes a unified authentication system that generates JWT tokens compatible with external services. Demo credentials:
 
-To back up the database to a file named `marketplace-backup.sql`:
+- **Email**: `roicoroy@yahoo.com.br` / **Password**: `Rwbento123!`
+- **Email**: `user@example.com` / **Password**: `Password123`
+- **Email**: `test@example.com` / **Password**: `password123`
 
+## API Endpoints
+
+### Store API
+- `GET /store/products` - List products
+- `GET /store/regions` - List regions
+- `POST /store/carts` - Create cart
+- `POST /store/carts/{id}/complete` - Complete order
+
+### Admin API
+- `GET /admin/digital-products` - List digital products
+- `POST /admin/digital-products` - Create digital product
+- `POST /admin/digital-products/upload/{type}` - Upload media
+
+### Unified Auth API
+- `POST /unified-auth` - Login and get unified JWT token
+- `GET /unified-auth` - Get endpoint information
+
+## Digital Products
+
+This marketplace supports digital products with:
+- **File uploads** for digital content
+- **Preview and main media** types
+- **Automatic fulfillment** for digital orders
+- **Download protection** for purchased content
+
+## Database Management
+
+### Backup and Restore
+
+You can use `pg_dump` to back up your PostgreSQL database and `psql` to restore it:
+
+#### Backup
 ```bash
 docker compose -f .devcontainer/docker-compose.yml exec -T postgres pg_dump -U marketplace -d marketplace > marketplace-backup.sql
 ```
 
-### Restore
-
-To restore the database from a backup file named `marketplace-backup.sql`:
-
+#### Restore
 ```bash
 cat marketplace-backup.sql | docker compose -f .devcontainer/docker-compose.yml exec -T postgres psql -U marketplace -d marketplace
 ```
 
-### Using NPM Scripts
+#### Using NPM Scripts
 
-This project provides npm scripts in the root `package.json` to simplify the backup and restore process.
-
-#### Backup
-
-To create a new backup of your database, run the following command. This will create a new timestamped backup file in the `/backups` directory.
-
+**Create backup:**
 ```bash
 npm run db:backup
 ```
 
-#### Restore from a specific file
-
-To see a list of available backups, run:
-
+**List available backups:**
 ```bash
 npm run db:restore
 ```
 
-To restore a specific backup file, run the following command, replacing `<filename>` with the name of the backup file you want to restore:
-
+**Restore specific backup:**
 ```bash
 npm run db:restore-file --file=<filename>
 ```
 
-#### Restore the latest backup
-
-To restore the most recent backup file from the `/backups` directory, run:
-
+**Restore latest backup:**
 ```bash
 npm run db:restore-latest
 ```
 
+## Cleanup Resources
+
+Remove containers, networks, and volumes:
+
+**Option 1: PostgreSQL only**
+```bash
+docker compose down -v
+```
+
+**Option 2: Full cleanup**
+```bash
+docker compose -f docker-compose.yml down -v
+```
+
+## Development
+
+The project is built with:
+- **Medusa 2.6.1** - Latest Medusa framework
+- **TypeScript** - Full type safety
+- **MikroORM** - Database ORM
+- **Custom modules** - Digital product functionality
+- **Unified middleware** - Cross-service authentication
+
+## Testing
+
+The marketplace includes comprehensive testing for:
+- Digital product workflows
+- Authentication systems
+- API endpoints
+- Database operations
+
 ## License
 
-MIT
+MIT License - See LICENSE file for details.
+
+---
+
+**Note**: This is the backend server component of the Goiaba Servers unified platform. For the complete system including Strapi CMS integration, refer to the main project documentation.

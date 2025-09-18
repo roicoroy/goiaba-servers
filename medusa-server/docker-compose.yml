@@ -14,21 +14,6 @@ services:
     networks:
       - unified-auth-network
 
-  website:
-    build:
-      context: medusa-server/website
-      dockerfile: Dockerfile
-    container_name: website
-    depends_on:
-      - medusa
-    restart: always
-    ports:
-      - "8000:8000"
-    volumes:
-      - ./medusa-server/website/.env.docker:/application/.env
-    networks:
-      - unified-auth-network
-
   postgres:
     image: postgres:15.3-alpine
     container_name: medusa-db

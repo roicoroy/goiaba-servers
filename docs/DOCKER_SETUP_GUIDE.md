@@ -65,7 +65,7 @@ STRAPI_DB_NAME=strapi
 ```
 ┌─────────────────┐    ┌─────────────────┐
 │   Nginx Proxy   │    │   Client Apps   │
-│   Port: 80      │◄───┤   Port: 3000    │
+│   Port: 80      │◄───┤  (External)     │
 └─────────────────┘    └─────────────────┘
          │
          ▼

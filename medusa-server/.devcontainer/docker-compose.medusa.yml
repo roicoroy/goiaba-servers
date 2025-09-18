@@ -18,22 +18,6 @@ services:
     networks:
       - internal
 
-  website:
-    build:
-      context: ../website
-      dockerfile: Dockerfile
-    container_name: ${PROJECT_NAME:-website}-medusa
-    depends_on:
-      - medusa
-    restart: always
-    ports:
-      - 8000:8000
-    volumes:
-      - ../website/.env.docker:/application/.env
-    command: sh -c "yarn dev"
-    networks:
-      - internal
-
 networks:
   internal:
     external: true
