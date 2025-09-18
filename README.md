@@ -9,7 +9,7 @@ The platform is built on a microservices architecture, with the following servic
 -   **Medusa Server (`medusa`):** The core e-commerce engine, responsible for products, orders, and marketplace logic.
 -   **Storefront (`website`):** A Next.js-based storefront for the Medusa backend.
 -   **Strapi CMS (`strapi`):** A headless CMS for managing content.
--   **Shared Auth Middleware (`shared-auth-middleware`):** A standalone Node.js service that handles unified authentication by generating and verifying JWTs for both Medusa and Strapi.
+
 -   **Nginx (`nginx`):** A reverse proxy that sits in front of all services.
 -   **Databases:** Two independent PostgreSQL databases, one for Medusa (`medusa-db`) and one for Strapi (`strapi-db`).
 -   **Redis (`redis`):** A Redis instance for Medusa's caching and job queue.
@@ -19,7 +19,7 @@ All services are connected through a shared Docker network (`unified-auth-networ
 
 ## Features
 
--   **Unified Authentication:** Single sign-on between the Medusa marketplace and Strapi CMS.
+-   **Unified Authentication:** A unified authentication system between the Medusa marketplace and Strapi CMS.
 -   **Multi-Vendor Marketplace:** Built on the Medusa marketplace demo, allowing multiple vendors to sell products.
 -   **Headless CMS:** Flexible content management powered by Strapi.
 -   **Dockerized Environment:** The entire platform is containerized, allowing for easy setup and deployment.
@@ -31,7 +31,6 @@ All services are connected through a shared Docker network (`unified-auth-networ
 -   **CMS:** [Strapi](https://strapi.io/)
 -   **Storefront:** [Next.js](https://nextjs.org/)
 -   **Backend:** [Node.js](https://nodejs.org/)
--   **Authentication:** [JWT](https://jwt.io/), custom middleware
 -   **Database:** [PostgreSQL](https://www.postgresql.org/), [Redis](https://redis.io/)
 -   **Web Server:** [Nginx](https://www.nginx.com/)
 -   **Orchestration:** [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/)
@@ -73,7 +72,7 @@ Before you begin, ensure you have the following installed:
     | Medusa Admin          | `http://localhost:9000/app`       |
     | Strapi API            | `http://localhost:1337`           |
     | Strapi Admin          | `http://localhost:1337/admin`     |
-    | Shared Auth Service   | `http://localhost:3000`           |
+    
     | Nginx Proxy           | `http://localhost:80`             |
     | Strapi DB Admin       | `http://localhost:9090`           |
 
@@ -91,8 +90,7 @@ This project includes a suite of tests to ensure the stability of the unified au
 
 -   **Run specific tests:**
 
-    -   `npm run test:basic`: Tests the basic unified authentication flow.
-    -   `npm run test:docker`: Tests the Docker-based unified authentication.
+    
     -   `npm run test:medusa`: Tests the Medusa integration.
     -   `npm run test:strapi`: Tests the Strapi integration.
     -   `npm run test:cross-service`: Tests the interaction between services.

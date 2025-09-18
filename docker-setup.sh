@@ -42,7 +42,7 @@ if ! command -v docker-compose &> /dev/null; then
 fi
 
 # Define the docker-compose files to use
-COMPOSE_FILES="-f docker-compose.yml -f medusa-server/docker-compose.yml -f strapi-server/docker-compose.yml -f shared-auth-middleware/docker-compose.yml"
+COMPOSE_FILES="-f docker-compose.yml -f medusa-server/docker-compose.yml -f strapi-server/docker-compose.yml"
 
 # Create necessary directories
 print_status "Creating necessary directories..."
@@ -78,12 +78,6 @@ else
     print_warning "Strapi server is not responding yet"
 fi
 
-# Check Shared Auth Middleware
-if curl -f http://localhost:3000/health > /dev/null 2>&1; then
-    print_success "Shared Auth Middleware is healthy"
-else
-    print_warning "Shared Auth Middleware is not responding yet"
-fi
 
 print_success "Setup complete!"
 
@@ -94,14 +88,13 @@ echo "📋 Service URLs:"
 echo "   Medusa API:           http://localhost:9000"
 echo "   Strapi API:           http://localhost:1337"
 echo "   Strapi Admin:         http://localhost:1337/admin"
-echo "   Shared Auth Service:  http://localhost:3000"
+
 echo "   Nginx Proxy:          http://localhost:80"
 echo ""
 echo "🔐 Test Endpoints:"
 echo "   Medusa Auth:      POST http://localhost:9000/unified-auth"
 echo "   Strapi Auth:      POST http://localhost:1337/api/unified-auth/login"
-echo "   Shared Auth:      POST http://localhost:3000/auth/generate-token"
-echo "   Token Verify:     POST http://localhost:3000/auth/verify-token"
+
 echo ""
 echo "📊 Management Commands:"
 echo "   View logs:      docker-compose $COMPOSE_FILES logs -f"
@@ -110,7 +103,5 @@ echo "   Restart:        docker-compose $COMPOSE_FILES restart"
 echo "   Clean up:       docker-compose $COMPOSE_FILES down -v"
 echo ""
 echo "🧪 Run tests:"
-echo "   Basic tests:    npm run test:basic"
-echo "   Docker tests:   npm run test:docker"
 echo "   Full suite:     npm test"
 echo "   Postman:        Unified-Auth-Postman-Collection.json"
