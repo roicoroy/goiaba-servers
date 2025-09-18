@@ -1,21 +1,61 @@
 {
-  "name": "medusa2-marketplace-demo",
-  "version": "1.0.0",
-  "description": "This is a demo project which how to create a marketplace demo using [Medusa 2.0](https://medusajs.com/)",
-  "main": "index.js",
+  "name": "medusa-starter-default",
+  "version": "0.0.1",
+  "description": "A starter for Medusa projects.",
+  "author": "Medusa (https://medusajs.com)",
+  "license": "MIT",
+  "keywords": [
+    "sqlite",
+    "postgres",
+    "typescript",
+    "ecommerce",
+    "headless",
+    "medusa"
+  ],
   "scripts": {
-    "composerUp": "cd .devcontainer && docker compose up",
-    "setupMedusaServer": "cd medusa-marketplace-demo && yarn && npx medusa db:setup --db marketplace && npx medusa db:migrate && yarn dev",
-    "startMedusaLocalServer":"cd medusa-marketplace-demo && yarn dev",
-    "setupMedusaUserSeed": "cd medusa-marketplace-demo && npx medusa user --email test@example.com --password Password123 && yarn seed",
-    "setup":"npm run setupMedusaServer && npm run setupMedusaUserSeed",
-    "start": "docker compose -f ./.devcontainer/docker-compose.yml -f ./.devcontainer/docker-compose.medusa.yml up --build",
-    "db:backup": "mkdir -p ./backups && docker exec -t marketplace-db-postgres pg_dump -U marketplace -d marketplace --clean --if-exists > ./backups/marketplace-$(date +%Y%m%d_%H%M%S).sql",
-    "db:restore": "echo '\nAvailable backups:' && ls -l ./backups/ && echo '\nTo restore, run: npm run db:restore-file --file=<filename>'",
-    "db:restore-file": "if [ -f \"./backups/$npm_config_file\" ]; then cat ./backups/$npm_config_file | docker exec -i marketplace-db-postgres psql -U marketplace -d marketplace; else echo \"Error: Backup file './backups/$npm_config_file' not found\"; fi",
-    "db:restore-latest": "cat $(ls -t ./backups/*.sql | head -n1) | docker exec -i marketplace-db-postgres psql -U marketplace -d marketplace"
+    "build": "medusa build",
+    "seed": "medusa exec ./src/scripts/seed.ts",
+    "start": "medusa start",
+    "dev": "medusa develop",
+    "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
+    "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
+    "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit"
   },
-  "author": "",
-  "license": "ISC",
+  "dependencies": {
+    "@medusajs/admin-sdk": "2.6.1",
+    "@medusajs/cli": "2.6.1",
+    "@medusajs/framework": "2.6.1",
+    "@medusajs/medusa": "2.6.1",
+    "@mikro-orm/core": "6.4.3",
+    "@mikro-orm/knex": "6.4.3",
+    "@mikro-orm/migrations": "6.4.3",
+    "@mikro-orm/postgresql": "6.4.3",
+    "@types/bcrypt": "^6.0.0",
+    "@types/jsonwebtoken": "^9.0.10",
+    "awilix": "^8.0.1",
+    "bcrypt": "^6.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.13.0"
+  },
+  "devDependencies": {
+    "@medusajs/test-utils": "2.6.1",
+    "@mikro-orm/cli": "6.4.3",
+    "@swc/core": "1.5.7",
+    "@swc/jest": "^0.2.36",
+    "@types/jest": "^29.5.13",
+    "@types/node": "^20.17.19",
+    "@types/react": "^18.3.2",
+    "@types/react-dom": "^18.2.25",
+    "jest": "^29.7.0",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.2",
+    "vite": "^5.2.11"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }
