@@ -44,6 +44,10 @@ fi
 # Define the docker-compose files to use
 COMPOSE_FILES="-f docker-compose.yml -f medusa-server/docker-compose.yml -f strapi-server/docker-compose.yml"
 
+# Create docker network
+print_status "Creating docker network..."
+docker network create unified-auth-network || true
+
 # Create necessary directories
 print_status "Creating necessary directories..."
 mkdir -p logs
