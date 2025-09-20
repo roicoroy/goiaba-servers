@@ -18,6 +18,7 @@ services:
       - medusa-db
       - medusa-redis
     environment:
+      - STRIPE_API_KEY=${STRIPE_API_KEY}
       - DATABASE_URL=${DATABASE_URL}
       - REDIS_URL=${REDIS_URL}
       - NODE_ENV=${NODE_ENV}

@@ -44,12 +44,28 @@ print_success "Redis is ready!"
 
 # Check if database is already initialized by looking for existing tables
 print_status "Checking if database is initialized..."
-DB_INITIALIZED=$(PGPASSWORD=super-secure-password psql -h medusa-db -U marketplace -d goiaba_db -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';" 2>/dev/null | xargs)
+DB_INITIALIZED=$(PGPASSWORD=super-secure-password psql -h medusa-db -U marketplace -d medusa_store -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';" 2>/dev/null | xargs)
 
-if [ "$DB_INITIALIZED" -gt "0" ]; then
+if [ "$DB_INITIALIZED" -gt "10" ]; then
     print_status "Database already initialized with $DB_INITIALIZED tables, skipping setup"
+    
+    # Check if we need to run migrations
+    print_status "Checking for pending migrations..."
+    if yarn medusa db:migrate --dry-run 2>/dev/null | grep -q "pending"; then
+        print_status "Running pending migrations..."
+        yarn medusa db:migrate
+        print_success "Database migrations completed!"
+    else
+        print_status "No pending migrations found"
+    fi
 else
-    print_status "Database is empty, running initial setup..."
+    print_status "Database needs initialization, running full setup..."
+    
+    # Reset database if it has some tables but not complete
+    if [ "$DB_INITIALIZED" -gt "0" ]; then
+        print_status "Resetting incomplete database..."
+        PGPASSWORD=super-secure-password psql -h medusa-db -U marketplace -d medusa_store -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" 2>/dev/null || true
+    fi
     
     print_status "Running database migrations..."
     yarn medusa db:migrate

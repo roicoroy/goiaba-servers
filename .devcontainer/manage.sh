@@ -19,6 +19,10 @@ print_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
+print_warning() {
+    echo -e "${YELLOW}[WARNING]${NC} $1"
+}
+
 print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
@@ -36,6 +40,7 @@ show_help() {
     echo "  logs        Show logs for all services"
     echo "  status      Show status of all services"
     echo "  tunnel      Start external access tunnel (LocalTunnel)"
+    echo "  reset-db    Reset Medusa database (clean start)"
     echo "  clean       Stop and remove all containers and volumes"
     echo "  help        Show this help message"
     echo ""
@@ -73,6 +78,23 @@ case "${1:-help}" in
     tunnel)
         print_status "Starting external access tunnel..."
         ./quick-tunnel.sh
+        ;;
+    reset-db)
+        print_status "Resetting Medusa database..."
+        print_warning "This will delete all data in the Medusa database!"
+        read -p "Are you sure? (y/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            print_status "Stopping Medusa container..."
+            docker-compose stop medusa
+            print_status "Resetting database..."
+            docker-compose exec -T medusa-db psql -U marketplace -d medusa_store -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+            print_status "Restarting Medusa container..."
+            docker-compose start medusa
+            print_success "Database reset complete! Medusa will reinitialize automatically."
+        else
+            print_status "Database reset cancelled."
+        fi
         ;;
     clean)
         print_status "Stopping and cleaning up all services..."
