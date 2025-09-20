@@ -1,3 +1,4 @@
+require('dotenv').config({ path: __dirname + '/.env' });
 const { exec } = require('child_process');
 const { promisify } = require('util');
 const axios = require('axios');
@@ -5,8 +6,8 @@ const axios = require('axios');
 const execAsync = promisify(exec);
 
 describe('Docker Services Health Check', () => {
-  const MEDUSA_URL = 'http://localhost:9000';
-  const TIMEOUT = 30000;
+  const MEDUSA_URL = process.env.MEDUSA_URL;
+  const TIMEOUT = parseInt(process.env.TEST_TIMEOUT) || 30000;
 
   test('should have Medusa containers running', async () => {
     try {

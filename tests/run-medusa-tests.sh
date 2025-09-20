@@ -24,6 +24,12 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Load test environment variables
+if [ -f ".env" ]; then
+    print_status "Loading test environment variables from .env"
+    export $(cat .env | grep -v '^#' | xargs)
+fi
+
 # Check if Medusa is running
 print_status "Checking if Medusa server is accessible..."
 
