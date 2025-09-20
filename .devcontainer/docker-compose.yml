@@ -18,12 +18,12 @@ services:
       - medusa-db
       - medusa-redis
     environment:
-      - DATABASE_URL=postgres://marketplace:super-secure-password@medusa-db:5432/goiaba_db?ssl=false
+      - DATABASE_URL=postgres://marketplace:super-secure-password@medusa-db:5432/medusa_store?ssl_mode=disable
       - REDIS_URL=redis://medusa-redis:6379
       - NODE_ENV=development
       - JWT_SECRET=supersecret
       - COOKIE_SECRET=supersecret
-      - DB_NAME=goiaba_db
+      - DB_NAME=medusa_store
       - STORE_CORS=http://localhost:8000,https://docs.medusajs.com,http://localhost:8100,http://localhost:46247/,http://localhost:5173
       - ADMIN_CORS=http://localhost:5173,http://localhost:9000,https://docs.medusajs.com,http://localhost:8100,http://localhost:46247/,http://localhost:5173
       - AUTH_CORS=http://localhost:5173,http://localhost:9000,https://docs.medusajs.com,http://localhost:8100,http://localhost:46247/,http://localhost:5173
@@ -41,7 +41,7 @@ services:
     environment:
       - POSTGRES_USER=marketplace
       - POSTGRES_PASSWORD=super-secure-password
-      - POSTGRES_DB=goiaba_db
+      - POSTGRES_DB=medusa_store
     volumes:
       - medusa-db-data:/var/lib/postgresql/data
 
@@ -90,5 +90,3 @@ services:
       - POSTGRES_DB=strapi
     volumes:
       - strapi-data:/var/lib/postgresql/data
-
-
