@@ -38,8 +38,6 @@ services:
       - POSTGRES_DB=goiaba_db
     volumes:
       - medusa-db-data:/var/lib/postgresql/data
-    networks:
-      - unified-auth-network
 
   medusa-redis:
     image: redis:alpine
@@ -47,8 +45,6 @@ services:
       - "6380:6379"
     volumes:
       - medusa-redis-data:/data
-    networks:
-      - unified-auth-network
 
 volumes:
   medusa-db-data:
@@ -56,6 +52,3 @@ volumes:
   medusa-redis-data:
     driver: local
 
-networks:
-  unified-auth-network:
-    external: true

@@ -14,6 +14,9 @@ RUN yarn install --frozen-lockfile
 # Copy the rest of the application code
 COPY . .
 
+# Set production environment
+ENV NODE_ENV=production
+
 # Build the application
 RUN yarn build
 

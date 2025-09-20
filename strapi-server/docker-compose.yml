@@ -8,8 +8,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "1337:1337"
-    networks:
-      - unified-auth-network
     depends_on:
       - strapi-db
     environment:
@@ -41,13 +39,7 @@ services:
       - POSTGRES_DB=strapi
     volumes:
       - strapi-data:/var/lib/postgresql/data
-    networks:
-      - unified-auth-network
 
 volumes:
   strapi-data:
     driver: local
-
-networks:
-  unified-auth-network:
-    external: true
