@@ -18,7 +18,7 @@ services:
       - medusa-db
       - medusa-redis
     environment:
-      - DATABASE_URL=postgres://marketplace:super-secure-password@medusa-db:5432/goiaba_db?sslmode=disable
+      - DATABASE_URL=postgres://marketplace:super-secure-password@medusa-db:5432/goiaba_db?ssl=false
       - REDIS_URL=redis://medusa-redis:6379
       - NODE_ENV=development
       - JWT_SECRET=supersecret

@@ -96,7 +96,7 @@ Once running, access the services at:
 | **Medusa Health** | `http://localhost:9000/health` | Health check endpoint    |
 | **Strapi API**    | `http://localhost:1337`        | CMS API endpoints        |
 | **Strapi Admin**  | `http://localhost:1337/admin`  | CMS admin panel          |
-| **Nginx Proxy**   | `http://localhost:80`          | Reverse proxy            |
+
 
 ## Port Mapping
 
@@ -107,7 +107,7 @@ Once running, access the services at:
 | Medusa DB | 5432          | 5432          |
 | Strapi DB | 5432          | 5434          |
 | Redis     | 6379          | 6379          |
-| Nginx     | 80            | 80            |
+
 
 ## Project Structure
 
@@ -117,7 +117,7 @@ goiaba-servers/
 │   ├── docker-compose.yml  # Main Docker Compose configuration
 │   ├── docker-setup.sh     # Docker setup script
 │   ├── manage.sh           # Docker management script
-│   └── nginx.conf          # Nginx configuration
+
 ├── medusa-server/          # Medusa e-commerce server
 ├── strapi-server/          # Strapi CMS server
 ├── tests/                  # Test suites
