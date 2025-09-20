@@ -10,7 +10,7 @@ The platform is built on a microservices architecture with all services orchestr
 
 - **Medusa Server (`medusa`):** E-commerce API engine for products, orders, and marketplace functionality
 - **Strapi CMS (`strapi`):** Headless CMS for content management
-- **Nginx (`nginx`):** Reverse proxy and load balancer
+
 
 ### Data Layer
 
@@ -38,7 +38,7 @@ The platform is built on a microservices architecture with all services orchestr
 - **CMS:** [Strapi](https://strapi.io/)
 - **Backend:** [Node.js](https://nodejs.org/)
 - **Database:** [PostgreSQL](https://www.postgresql.org/), [Redis](https://redis.io/)
-- **Web Server:** [Nginx](https://www.nginx.com/)
+
 - **Orchestration:** [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/)
 
 ## Prerequisites
@@ -63,7 +63,7 @@ Before you begin, ensure you have the following installed:
 
 2. **Run the setup script:**
    ```bash
-   ./docker-setup.sh
+   ./setup.sh
    ```
 
 ### Option 2: Manual Setup
@@ -108,6 +108,50 @@ Once running, access the services at:
 | Strapi DB | 5432          | 5434          |
 | Redis     | 6379          | 6379          |
 | Nginx     | 80            | 80            |
+
+## Project Structure
+
+```
+goiaba-servers/
+├── .devcontainer/          # Docker configuration files
+│   ├── docker-compose.yml  # Main Docker Compose configuration
+│   ├── docker-setup.sh     # Docker setup script
+│   ├── manage.sh           # Docker management script
+│   └── nginx.conf          # Nginx configuration
+├── medusa-server/          # Medusa e-commerce server
+├── strapi-server/          # Strapi CMS server
+├── tests/                  # Test suites
+└── setup.sh               # Main setup script
+```
+
+## Management Commands
+
+### From Root Directory
+```bash
+# Initial setup
+./setup.sh
+```
+
+### From .devcontainer Directory
+```bash
+cd .devcontainer
+
+# Management script
+./manage.sh start    # Start all services
+./manage.sh stop     # Stop all services
+./manage.sh restart  # Restart all services
+./manage.sh build    # Build and start services
+./manage.sh logs     # View logs
+./manage.sh status   # Check service status
+./manage.sh clean    # Clean up everything
+
+# Direct Docker commands
+docker-compose up -d          # Start services
+docker-compose up -d --build  # Build and start
+docker-compose logs -f        # View logs
+docker-compose down           # Stop services
+docker-compose down -v        # Clean up (remove volumes)
+```
 
 ## Testing
 

@@ -10,7 +10,7 @@ services:
   # Medusa Services
   medusa:
     build:
-      context: ./medusa-server
+      context: ../medusa-server
       dockerfile: Dockerfile
     ports:
       - "9000:9000"
@@ -31,7 +31,7 @@ services:
       - VITE_BACKEND_URL=http://localhost:9000
       - MEDUSA_PUBLISHABLE_API_KEY=pk_3a082fac8795505e1d19814c38c9bbc92f233d9cd93b3caeaab601eb7e802af6
     volumes:
-      - ./medusa-server:/app
+      - ../medusa-server:/app
       - /app/node_modules
 
   medusa-db:
@@ -55,7 +55,7 @@ services:
   # Strapi Services
   strapi:
     build:
-      context: ./strapi-server
+      context: ../strapi-server
       dockerfile: Dockerfile
     ports:
       - "1337:1337"
@@ -77,7 +77,7 @@ services:
       - DATABASE_PASSWORD=strapi
       - DATABASE_SSL=false
     volumes:
-      - ./strapi-server:/app
+      - ../strapi-server:/app
       - /app/node_modules
 
   strapi-db:
@@ -91,14 +91,4 @@ services:
     volumes:
       - strapi-data:/var/lib/postgresql/data
 
-  # Nginx Proxy
-  nginx:
-    image: nginx:latest
-    container_name: nginx
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-    depends_on:
-      - medusa
-      - strapi
+
