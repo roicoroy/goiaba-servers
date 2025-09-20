@@ -4,7 +4,18 @@ loadEnv(process.env.NODE_ENV || 'development', process.cwd())
 
 module.exports = defineConfig({
   admin: {
-    disable: true,
+    vite: () => {
+      return {
+        resolve: {
+          alias: {
+            '/app/src': './src',
+          },
+        },
+        optimizeDeps: {
+          include: ["qs"],
+        },
+      };
+    },
   },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,

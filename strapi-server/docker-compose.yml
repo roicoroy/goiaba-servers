@@ -1,7 +1,7 @@
 services:
   strapi:
     build:
-      context: ./strapi-server
+      context: .
       dockerfile: Dockerfile
     ports:
       - "1337:1337"
@@ -23,7 +23,7 @@ services:
       - DATABASE_PASSWORD=strapi
       - DATABASE_SSL=false
     volumes:
-      - ./strapi-server:/app
+      - .:/app
       - /app/node_modules
 
   strapi-db:
