@@ -1,7 +1,5 @@
 /dist
 .env
-.env.docker
-.env.test
 .DS_Store
 /uploads
 /node_modules
