@@ -96,3 +96,8 @@ You can also use the provided Postman collection (`Unified-Auth-Postman-Collecti
 ## License
 
 This project is licensed under the MIT License.
+
+
+npx medusa db:setup && npx medusa db:create && npx medusa db:migrate
+
+npx medusa user --email roicoroy@yahoo.com.br --password Rwbento123!

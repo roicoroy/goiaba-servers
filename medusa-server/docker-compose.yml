@@ -6,7 +6,6 @@ services:
     build:
       context: ./medusa-server
       dockerfile: Dockerfile
-    command: tail -f /dev/null
     ports:
       - "9001:9000"
     networks:
@@ -22,7 +21,7 @@ services:
       - JWT_SECRET=supersecret
       - COOKIE_SECRET=supersecret
       - DB_NAME=goiaba_db
-      - DATABASE_URL=postgres://marketplace:super-secure-password@medusa-db/goiaba_db
+      - DATABASE_URL=postgres://marketplace:super-secure-password@medusa-db/goiaba_db?sslmode=disable
       - API_KEY=noop
       - VITE_BACKEND_URL=http://localhost:9001
     volumes:
@@ -39,7 +38,6 @@ services:
       - POSTGRES_DB=goiaba_db
     volumes:
       - medusa-db-data:/var/lib/postgresql/data
-      - ./postgresql.conf:/var/lib/postgresql/data/postgresql.conf
     networks:
       - unified-auth-network
 

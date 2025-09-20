@@ -1,5 +1,3 @@
-version: '3.8'
-
 networks:
   unified-auth-network:
     name: unified-auth-network
