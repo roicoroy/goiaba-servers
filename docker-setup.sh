@@ -41,12 +41,8 @@ if ! command -v docker-compose &> /dev/null; then
     exit 1
 fi
 
-# Define the docker-compose files to use
-COMPOSE_FILES="-f docker-compose.yml -f medusa-server/docker-compose.yml -f strapi-server/docker-compose.yml"
-
-# Create docker network
-print_status "Creating docker network..."
-docker network create unified-auth-network || true
+# Use the unified docker-compose file
+COMPOSE_FILES="-f docker-compose.yml"
 
 # Create necessary directories
 print_status "Creating necessary directories..."
@@ -102,10 +98,10 @@ echo "   Strapi Auth:      POST http://localhost:1337/api/unified-auth/login"
 
 echo ""
 echo "📊 Management Commands:"
-echo "   View logs:      docker-compose $COMPOSE_FILES logs -f"
-echo "   Stop services:  docker-compose $COMPOSE_FILES down"
-echo "   Restart:        docker-compose $COMPOSE_FILES restart"
-echo "   Clean up:       docker-compose $COMPOSE_FILES down -v"
+echo "   View logs:      docker-compose logs -f"
+echo "   Stop services:  docker-compose down"
+echo "   Restart:        docker-compose restart"
+echo "   Clean up:       docker-compose down -v"
 echo ""
 echo "🧪 Run tests:"
 echo "   Full suite:     npm test"

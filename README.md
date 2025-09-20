@@ -1,102 +1,136 @@
 # Goiaba Servers - Unified E-commerce and Content Platform
 
-This project is a fully integrated, dockerized platform that combines a **Medusa.js** multi-vendor marketplace with a **Strapi** headless CMS. It features a unified authentication system that provides a seamless single sign-on (SSO) experience for users across both the e-commerce storefront and the content-driven parts of the application.
+This project is a fully integrated, dockerized platform that combines a **Medusa.js** e-commerce engine with a **Strapi** headless CMS. The platform features a unified Docker setup for easy deployment and development.
 
 ## Architecture
 
-The platform is built on a microservices architecture, with the following services orchestrated by Docker Compose:
+The platform is built on a microservices architecture with all services orchestrated by a single Docker Compose file:
 
--   **Medusa Server (`medusa`):** The core e-commerce engine, responsible for products, orders, and marketplace logic.
--   **Strapi CMS (`strapi`):** A headless CMS for managing content.
--   **Nginx (`nginx`):** A reverse proxy that sits in front of all services.
--   **Databases:** Two independent PostgreSQL databases, one for Medusa (`medusa-db`) and one for Strapi (`strapi-db`).
--   **Redis (`redis`):** A Redis instance for Medusa's caching and job queue.
--   **Adminer (`strapiAdminer`):** A database management tool for the Strapi database.
+### Core Services
 
-All services are connected through a shared Docker network (`unified-auth-network`).
+- **Medusa Server (`medusa`):** E-commerce API engine for products, orders, and marketplace functionality
+- **Strapi CMS (`strapi`):** Headless CMS for content management
+- **Nginx (`nginx`):** Reverse proxy and load balancer
+
+### Data Layer
+
+- **Medusa Database (`medusa-db`):** PostgreSQL database for e-commerce data
+- **Strapi Database (`strapi-db`):** PostgreSQL database for CMS content
+- **Redis (`medusa-redis`):** Caching and session storage for Medusa
+
+### Network
+
+- **Default Docker Network:** All services communicate via Docker's default bridge network
 
 ## Features
 
--   **Unified Authentication:** A unified authentication system between the Medusa marketplace and Strapi CMS.
--   **Multi-Vendor Marketplace:** Built on the Medusa marketplace demo, allowing multiple vendors to sell products.
--   **Headless CMS:** Flexible content management powered by Strapi.
--   **Dockerized Environment:** The entire platform is containerized, allowing for easy setup and deployment.
--   **Centralized Logging:** All service logs are accessible through Docker Compose.
+- **E-commerce Engine:** Full-featured e-commerce API with Medusa.js
+- **Digital Products:** Support for digital product fulfillment
+- **Headless CMS:** Flexible content management with Strapi
+- **Unified Docker Setup:** Single docker-compose.yml for all services
+- **Development Ready:** Hot reload and development configurations
+- **Testing Suite:** Comprehensive health checks and API tests
+- **Environment Management:** Separate configurations for development and production
 
 ## Tech Stack
 
--   **E-commerce:** [Medusa.js](https://medusajs.com/)
--   **CMS:** [Strapi](https://strapi.io/)
--   **Backend:** [Node.js](https://nodejs.org/)
--   **Database:** [PostgreSQL](https://www.postgresql.org/), [Redis](https://redis.io/)
--   **Web Server:** [Nginx](https://www.nginx.com/)
--   **Orchestration:** [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/)
+- **E-commerce:** [Medusa.js](https://medusajs.com/)
+- **CMS:** [Strapi](https://strapi.io/)
+- **Backend:** [Node.js](https://nodejs.org/)
+- **Database:** [PostgreSQL](https://www.postgresql.org/), [Redis](https://redis.io/)
+- **Web Server:** [Nginx](https://www.nginx.com/)
+- **Orchestration:** [Docker](https://www.docker.com/), [Docker Compose](https://docs.docker.com/compose/)
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
--   [Docker](https://www.docker.com/get-started)
--   [Docker Compose](https://docs.docker.com/compose/install/)
--   [Node.js](https://nodejs.org/en/download/)
--   [Yarn](https://classic.yarnpkg.com/en/docs/install/)
+- [Docker](https://www.docker.com/get-started)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+- [Node.js](https://nodejs.org/en/download/)
+- [Yarn](https://classic.yarnpkg.com/en/docs/install/)
 
-## Getting Started
+## Quick Start
 
-1.  **Clone the repository:**
+### Option 1: Automated Setup (Recommended)
 
-    ```bash
-    git clone https://github.com/roicoroy/goiaba-servers.git
-    cd goiaba-servers
-    ```
+1. **Clone the repository:**
 
-2.  **Run the setup script:**
+   ```bash
+   git clone https://github.com/roicoroy/goiaba-servers.git
+   cd goiaba-servers
+   ```
 
-    This script will check for dependencies, create necessary directories, build the Docker images, and start all the services.
+2. **Run the setup script:**
+   ```bash
+   ./docker-setup.sh
+   ```
 
-    ```bash
-    ./docker-setup.sh
-    ```
+### Option 2: Manual Setup
 
-3.  **Access the services:**
+1. **Clone and navigate:**
 
-    Once the setup is complete, you can access the different parts of the platform at the following URLs:
+   ```bash
+   git clone https://github.com/roicoroy/goiaba-servers.git
+   cd goiaba-servers
+   ```
 
-    | Service               | URL                               |
-    | --------------------- | --------------------------------- |
-    | Medusa API            | `http://localhost:9000`           |
-    | Medusa Admin          | `http://localhost:9000/app`       |
-    | Strapi API            | `http://localhost:1337`           |
-    | Strapi Admin          | `http://localhost:1337/admin`     |
-    | Nginx Proxy           | `http://localhost:80`             |
-    | Strapi DB Admin       | `http://localhost:9090`           |
+2. **Start all services:**
 
-    Default credentials for the Medusa admin are `admin@medusa-test.com` / `supersecret`. For Strapi, you will need to create an admin user on your first visit to the admin panel.
+   ```bash
+   docker-compose up -d --build
+   ```
+
+3. **Check service status:**
+   ```bash
+   docker-compose ps
+   ```
+
+## Service URLs
+
+Once running, access the services at:
+
+| Service           | URL                            | Description              |
+| ----------------- | ------------------------------ | ------------------------ |
+| **Medusa API**    | `http://localhost:9000`        | E-commerce API endpoints |
+| **Medusa Health** | `http://localhost:9000/health` | Health check endpoint    |
+| **Strapi API**    | `http://localhost:1337`        | CMS API endpoints        |
+| **Strapi Admin**  | `http://localhost:1337/admin`  | CMS admin panel          |
+| **Nginx Proxy**   | `http://localhost:80`          | Reverse proxy            |
+
+## Port Mapping
+
+| Service   | Internal Port | External Port |
+| --------- | ------------- | ------------- |
+| Medusa    | 9000          | 9000          |
+| Strapi    | 1337          | 1337          |
+| Medusa DB | 5432          | 5432          |
+| Strapi DB | 5432          | 5434          |
+| Redis     | 6379          | 6379          |
+| Nginx     | 80            | 80            |
 
 ## Testing
 
 This project includes a suite of tests to ensure the stability of the unified authentication system and the individual services.
 
--   **Run all tests:**
+- **Run all tests:**
 
-    ```bash
-    npm test
-    ```
+  ```bash
+  npm test
+  ```
 
--   **Run specific tests:**
+- **Run specific tests:**
 
-    
-    -   `npm run test:medusa`: Tests the Medusa integration.
-    -   `npm run test:strapi`: Tests the Strapi integration.
-    -   `npm run test:cross-service`: Tests the interaction between services.
-    -   `npm run test:security`: Runs security-related tests.
+  - `npm run test:medusa`: Tests the Medusa integration.
+  - `npm run test:strapi`: Tests the Strapi integration.
+  - `npm run test:cross-service`: Tests the interaction between services.
+  - `npm run test:security`: Runs security-related tests.
 
 You can also use the provided Postman collection (`Unified-Auth-Postman-Collection.json`) to test the API endpoints.
 
 ## License
 
 This project is licensed under the MIT License.
-
 
 npx medusa db:setup && npx medusa db:create && npx medusa db:migrate
 
