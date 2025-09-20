@@ -88,7 +88,7 @@ case "${1:-help}" in
             print_status "Stopping Medusa container..."
             docker-compose stop medusa
             print_status "Resetting database..."
-            docker-compose exec -T medusa-db psql -U marketplace -d medusa_store -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
+            docker-compose exec -T -e PGPASSWORD=${POSTGRES_PASSWORD} medusa-db psql -U marketplace -d medusa_store -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;"
             print_status "Restarting Medusa container..."
             docker-compose start medusa
             print_success "Database reset complete! Medusa will reinitialize automatically."

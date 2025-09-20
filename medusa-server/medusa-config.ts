@@ -9,7 +9,7 @@ module.exports = defineConfig({
       ssl: false
     },
     http: {
-      storeCors: process.env.STORE_CORS!,
+      storeCors: process.env.STORE_CORS ||  "http://localhost:8000,http://localhost:8100",
       adminCors: process.env.ADMIN_CORS!,
       authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET || "supersecret",

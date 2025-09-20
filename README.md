@@ -11,7 +11,6 @@ The platform is built on a microservices architecture with all services orchestr
 - **Medusa Server (`medusa`):** E-commerce API engine for products, orders, and marketplace functionality
 - **Strapi CMS (`strapi`):** Headless CMS for content management
 
-
 ### Data Layer
 
 - **Medusa Database (`medusa-db`):** PostgreSQL database for e-commerce data
@@ -97,7 +96,6 @@ Once running, access the services at:
 | **Strapi API**    | `http://localhost:1337`        | CMS API endpoints        |
 | **Strapi Admin**  | `http://localhost:1337/admin`  | CMS admin panel          |
 
-
 ## Port Mapping
 
 | Service   | Internal Port | External Port |
@@ -107,7 +105,6 @@ Once running, access the services at:
 | Medusa DB | 5432          | 5432          |
 | Strapi DB | 5432          | 5434          |
 | Redis     | 6379          | 6379          |
-
 
 ## Project Structure
 
@@ -127,12 +124,14 @@ goiaba-servers/
 ## Management Commands
 
 ### From Root Directory
+
 ```bash
 # Initial setup
 ./setup.sh
 ```
 
 ### From .devcontainer Directory
+
 ```bash
 cd .devcontainer
 
@@ -189,12 +188,14 @@ npx medusa user --email roicoroy@yahoo.com.br --password Rwbento123!
 Access your development environment from anywhere using LocalTunnel:
 
 ### Quick Start
+
 ```bash
 cd .devcontainer
 ./manage.sh tunnel
 ```
 
 ### Setup LocalTunnel
+
 ```bash
 cd .devcontainer
 ./setup-tunnel.sh    # Install LocalTunnel
@@ -202,12 +203,14 @@ cd .devcontainer
 ```
 
 ### Features
+
 - ✅ **Completely free** - No signup required
 - ✅ **HTTPS by default** - Secure connections
 - ✅ **Easy to use** - One command to start
 - ⚠️ **URLs change** - New URLs on each restart
 
 ### Manual Usage
+
 ```bash
 # Install (one time)
 npm install -g localtunnel

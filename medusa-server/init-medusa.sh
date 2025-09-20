@@ -26,7 +26,7 @@ print_error() {
 
 # Wait for database to be ready
 print_status "Waiting for database to be ready..."
-until pg_isready -h medusa-db -p 5432 -U marketplace; do
+until PGPASSWORD=${POSTGRES_PASSWORD} pg_isready -h medusa-db -p 5432 -U marketplace; do
   echo "Waiting for database..."
   sleep 2
 done
@@ -35,19 +35,26 @@ print_success "Database is ready!"
 
 # Wait for Redis to be ready
 print_status "Waiting for Redis to be ready..."
-until redis-cli -h medusa-redis -p 6379 ping; do
+until redis-cli -h medusa-redis -p 6379 -a ${REDIS_PASSWORD} ping 2>/dev/null; do
   echo "Waiting for Redis..."
   sleep 2
 done
 
 print_success "Redis is ready!"
 
-# Check if database is already initialized by looking for existing tables
+# Check if database is already initialized by looking for existing tables and data
 print_status "Checking if database is initialized..."
-DB_INITIALIZED=$(PGPASSWORD=super-secure-password psql -h medusa-db -U marketplace -d medusa_store -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';" 2>/dev/null | xargs)
+DB_INITIALIZED=$(PGPASSWORD=${POSTGRES_PASSWORD} psql -h medusa-db -U marketplace -d medusa_store -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public';" 2>/dev/null | xargs || echo "0")
 
-if [ "$DB_INITIALIZED" -gt "10" ]; then
-    print_status "Database already initialized with $DB_INITIALIZED tables, skipping setup"
+# Check if regions exist (indicates successful seeding)
+REGIONS_EXIST=$(PGPASSWORD=${POSTGRES_PASSWORD} psql -h medusa-db -U marketplace -d medusa_store -t -c "SELECT COUNT(*) FROM region WHERE id IS NOT NULL;" 2>/dev/null | xargs || echo "0")
+
+# Ensure we have numeric values
+DB_INITIALIZED=${DB_INITIALIZED:-0}
+REGIONS_EXIST=${REGIONS_EXIST:-0}
+
+if [ "$DB_INITIALIZED" -gt "100" ] && [ "$REGIONS_EXIST" -gt "0" ]; then
+    print_status "Database fully initialized with $DB_INITIALIZED tables and $REGIONS_EXIST regions, skipping setup"
     
     # Check if we need to run migrations
     print_status "Checking for pending migrations..."
@@ -59,12 +66,13 @@ if [ "$DB_INITIALIZED" -gt "10" ]; then
         print_status "No pending migrations found"
     fi
 else
-    print_status "Database needs initialization, running full setup..."
+    print_status "Database needs initialization (tables: $DB_INITIALIZED, regions: $REGIONS_EXIST)"
     
-    # Reset database if it has some tables but not complete
-    if [ "$DB_INITIALIZED" -gt "0" ]; then
-        print_status "Resetting incomplete database..."
-        PGPASSWORD=super-secure-password psql -h medusa-db -U marketplace -d medusa_store -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" 2>/dev/null || true
+    # Always reset database if it's not fully initialized to avoid conflicts
+    if [ "${DB_INITIALIZED:-0}" -gt "0" ]; then
+        print_status "Resetting database to ensure clean state..."
+        PGPASSWORD=${POSTGRES_PASSWORD} psql -h medusa-db -U marketplace -d medusa_store -c "DROP SCHEMA public CASCADE; CREATE SCHEMA public;" 2>/dev/null || true
+        print_success "Database reset completed"
     fi
     
     print_status "Running database migrations..."
