@@ -5,12 +5,16 @@ import {
 import { uploadFilesWorkflow } from "@medusajs/medusa/core-flows"
 import { MedusaError } from "@medusajs/framework/utils"
 
+interface FileUploadRequest extends AuthenticatedMedusaRequest {
+  files?: any[]
+}
+
 export const POST = async (
-  req: AuthenticatedMedusaRequest,
+  req: FileUploadRequest,
   res: MedusaResponse
 ) => {
   const access = req.params.type === "main" ? "private" : "public"
-  const input = (req as any).files
+  const input = req.files
 
   if (!input?.length) {
     throw new MedusaError(

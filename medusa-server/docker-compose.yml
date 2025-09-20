@@ -1,31 +1,16 @@
-
-version: '3.8'
-
 services:
   medusa:
     build:
-      context: ./medusa-server
+      context: .
       dockerfile: Dockerfile
     ports:
-      - "9001:9000"
-    networks:
-      - unified-auth-network
+      - "9000:9000"
     depends_on:
       - medusa-db
       - medusa-redis
-    environment:
-      - STORE_CORS=http://localhost:8000,https://docs.medusajs.com
-      - ADMIN_CORS=http://localhost:5173,http://localhost:9001,https://docs.medusajs.com
-      - AUTH_CORS=http://localhost:5173,http://localhost:9001,https://docs.medusajs.com
-      - REDIS_URL=redis://medusa-redis:6379
-      - JWT_SECRET=supersecret
-      - COOKIE_SECRET=supersecret
-      - DB_NAME=goiaba_db
-      - DATABASE_URL=postgres://marketplace:super-secure-password@medusa-db/goiaba_db?sslmode=disable
-      - API_KEY=noop
-      - VITE_BACKEND_URL=http://localhost:9001
     volumes:
-      - ./medusa-server:/app
+      - ./.env.docker:/app/.env
+      - .:/app
       - /app/node_modules
 
   medusa-db:
@@ -42,7 +27,7 @@ services:
   medusa-redis:
     image: redis:alpine
     ports:
-      - "6380:6379"
+      - "6379:6379"
     volumes:
       - medusa-redis-data:/data
 
@@ -51,4 +36,3 @@ volumes:
     driver: local
   medusa-redis-data:
     driver: local
-

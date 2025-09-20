@@ -1,0 +1,1 @@
+docker-compose -f medusa-server/docker-compose.yml build

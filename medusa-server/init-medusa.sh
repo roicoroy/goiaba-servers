@@ -64,5 +64,9 @@ else
     print_success "Admin user created successfully!"
 fi
 
+print_status "Building admin panel..."
+yarn build
+print_success "Admin panel built successfully!"
+
 print_status "Starting Medusa server..."
 exec yarn start

@@ -1,8 +1,8 @@
-import {
-  AuthenticatedMedusaRequest,
+import { 
+  AuthenticatedMedusaRequest, 
   MedusaResponse,
 } from "@medusajs/framework"
-import {
+import { 
   Modules,
   ContainerRegistrationKeys,
   MedusaError,
@@ -28,8 +28,8 @@ export const POST = async (
   })
 
   const customerDigitalOrderIds = customer.orders
-    .filter((order: any) => order.digital_product_order !== undefined)
-    .map((order: any) => order.digital_product_order.id)
+    .filter((order) => order.digital_product_order !== undefined)
+    .map((order) => order.digital_product_order.id)
 
   const { data: dpoResult } = await query.graph({
     entity: "digital_product_order",
