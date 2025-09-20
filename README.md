@@ -136,6 +136,9 @@ goiaba-servers/
 ```bash
 cd .devcontainer
 
+# First time setup - copy environment file
+cp .env.example .env  # Customize as needed
+
 # Management script
 ./manage.sh start    # Start all services
 ./manage.sh stop     # Stop all services
@@ -143,6 +146,7 @@ cd .devcontainer
 ./manage.sh build    # Build and start services
 ./manage.sh logs     # View logs
 ./manage.sh status   # Check service status
+./manage.sh tunnel   # Start external access tunnel
 ./manage.sh clean    # Clean up everything
 
 # Direct Docker commands
@@ -179,3 +183,38 @@ This project is licensed under the MIT License.
 npx medusa db:setup && npx medusa db:create && npx medusa db:migrate
 
 npx medusa user --email roicoroy@yahoo.com.br --password Rwbento123!
+
+## 🌐 External Access (Tunneling)
+
+Access your development environment from anywhere using LocalTunnel:
+
+### Quick Start
+```bash
+cd .devcontainer
+./manage.sh tunnel
+```
+
+### Setup LocalTunnel
+```bash
+cd .devcontainer
+./setup-tunnel.sh    # Install LocalTunnel
+./manage.sh tunnel   # Start tunnels
+```
+
+### Features
+- ✅ **Completely free** - No signup required
+- ✅ **HTTPS by default** - Secure connections
+- ✅ **Easy to use** - One command to start
+- ⚠️ **URLs change** - New URLs on each restart
+
+### Manual Usage
+```bash
+# Install (one time)
+npm install -g localtunnel
+
+# Start individual tunnels
+lt --port 9000 --subdomain your-medusa-name
+lt --port 1337 --subdomain your-strapi-name
+```
+
+**⚠️ Important:** Update CORS settings in your environment files with tunnel URLs when needed!

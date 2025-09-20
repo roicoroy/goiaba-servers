@@ -35,6 +35,7 @@ show_help() {
     echo "  build       Build and start services"
     echo "  logs        Show logs for all services"
     echo "  status      Show status of all services"
+    echo "  tunnel      Start external access tunnel (LocalTunnel)"
     echo "  clean       Stop and remove all containers and volumes"
     echo "  help        Show this help message"
     echo ""
@@ -68,6 +69,10 @@ case "${1:-help}" in
     status)
         print_status "Service status:"
         docker-compose ps
+        ;;
+    tunnel)
+        print_status "Starting external access tunnel..."
+        ./quick-tunnel.sh
         ;;
     clean)
         print_status "Stopping and cleaning up all services..."

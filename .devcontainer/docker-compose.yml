@@ -18,18 +18,18 @@ services:
       - medusa-db
       - medusa-redis
     environment:
-      - DATABASE_URL=postgres://marketplace:super-secure-password@medusa-db:5432/medusa_store?ssl_mode=disable
-      - REDIS_URL=redis://medusa-redis:6379
-      - NODE_ENV=development
-      - JWT_SECRET=supersecret
-      - COOKIE_SECRET=supersecret
-      - DB_NAME=medusa_store
-      - STORE_CORS=http://localhost:8000,https://docs.medusajs.com,http://localhost:8100,http://localhost:46247/,http://localhost:5173
-      - ADMIN_CORS=http://localhost:5173,http://localhost:9000,https://docs.medusajs.com,http://localhost:8100,http://localhost:46247/,http://localhost:5173
-      - AUTH_CORS=http://localhost:5173,http://localhost:9000,https://docs.medusajs.com,http://localhost:8100,http://localhost:46247/,http://localhost:5173
-      - API_KEY=noop
-      - VITE_BACKEND_URL=http://localhost:9000
-      - MEDUSA_PUBLISHABLE_API_KEY=pk_3a082fac8795505e1d19814c38c9bbc92f233d9cd93b3caeaab601eb7e802af6
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - NODE_ENV=${NODE_ENV}
+      - JWT_SECRET=${JWT_SECRET}
+      - COOKIE_SECRET=${COOKIE_SECRET}
+      - DB_NAME=${MEDUSA_DB_NAME}
+      - STORE_CORS=${STORE_CORS}
+      - ADMIN_CORS=${ADMIN_CORS}
+      - AUTH_CORS=${AUTH_CORS}
+      - API_KEY=${API_KEY}
+      - VITE_BACKEND_URL=${VITE_BACKEND_URL}
+      - MEDUSA_PUBLISHABLE_API_KEY=${MEDUSA_PUBLISHABLE_API_KEY}
     volumes:
       - ../medusa-server:/app
       - /app/node_modules
@@ -39,9 +39,9 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=marketplace
-      - POSTGRES_PASSWORD=super-secure-password
-      - POSTGRES_DB=medusa_store
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${MEDUSA_DB_NAME}
     volumes:
       - medusa-db-data:/var/lib/postgresql/data
 
@@ -62,20 +62,20 @@ services:
     depends_on:
       - strapi-db
     environment:
-      - HOST=0.0.0.0
-      - PORT=1337
-      - APP_KEYS=toBeModified1,toBeModified2
-      - API_TOKEN_SALT=tobemodified
-      - ADMIN_JWT_SECRET=tobemodified
-      - TRANSFER_TOKEN_SALT=tobemodified
-      - JWT_SECRET=tobemodified
-      - DATABASE_CLIENT=postgres
-      - DATABASE_HOST=strapi-db
-      - DATABASE_PORT=5432
-      - DATABASE_NAME=strapi
-      - DATABASE_USERNAME=strapi
-      - DATABASE_PASSWORD=strapi
-      - DATABASE_SSL=false
+      - HOST=${STRAPI_HOST}
+      - PORT=${STRAPI_PORT}
+      - APP_KEYS=${STRAPI_APP_KEYS}
+      - API_TOKEN_SALT=${STRAPI_API_TOKEN_SALT}
+      - ADMIN_JWT_SECRET=${STRAPI_ADMIN_JWT_SECRET}
+      - TRANSFER_TOKEN_SALT=${STRAPI_TRANSFER_TOKEN_SALT}
+      - JWT_SECRET=${STRAPI_JWT_SECRET}
+      - DATABASE_CLIENT=${STRAPI_DATABASE_CLIENT}
+      - DATABASE_HOST=${STRAPI_DATABASE_HOST}
+      - DATABASE_PORT=${STRAPI_DATABASE_PORT}
+      - DATABASE_NAME=${STRAPI_DATABASE_NAME}
+      - DATABASE_USERNAME=${STRAPI_DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${STRAPI_DATABASE_PASSWORD}
+      - DATABASE_SSL=${STRAPI_DATABASE_SSL}
     volumes:
       - ../strapi-server:/app
       - /app/node_modules
@@ -85,8 +85,8 @@ services:
     ports:
       - "5434:5432"
     environment:
-      - POSTGRES_USER=strapi
-      - POSTGRES_PASSWORD=strapi
-      - POSTGRES_DB=strapi
+      - POSTGRES_USER=${STRAPI_DATABASE_USERNAME}
+      - POSTGRES_PASSWORD=${STRAPI_DATABASE_PASSWORD}
+      - POSTGRES_DB=${STRAPI_DB_NAME}
     volumes:
       - strapi-data:/var/lib/postgresql/data
